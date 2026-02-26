@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <title>How Do Medical MLLMs Fail? A Study on Visual Grounding in Medical Images</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    :root {
+      --hero-bg-start: #ffffff;
+      --hero-bg-end: #ffffff;
+      --text-light: #0f172a;
+      --card-bg: #ffffff;
+      --page-bg: #ffffff;
+      --border-soft: #dbe3ef;
+      --shadow-soft: 0 14px 30px rgba(0, 0, 0, 0.06);
+      --shadow-strong: 0 10px 24px rgba(15, 23, 42, 0.2);
+      --accent: #0ea5e9;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+      background: var(--page-bg);
+      font-family: "Noto Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: #0f172a;
+    }
+
+    .paper-hero {
+      min-height: auto;
+      background: #ffffff;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3.25rem 1.25rem 2.25rem;
+    }
+
+    .paper-hero .hero-body {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .title.is-1.paper-title {
+      font-family: "Google Sans", "Noto Sans", sans-serif;
+      color: var(--text-light);
+      font-size: 3.4em;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+    }
+
+    .paper-title-main,
+    .paper-title-sub {
+      display: block;
+    }
+
+    .paper-title-sub {
+      font-size: 0.78em;
+      margin-top: 0.2rem;
+    }
+
+    .paper-subtitle,
+    .paper-authors,
+    .paper-affiliation {
+      color: var(--text-light);
+    }
+
+    .paper-subtitle:empty {
+      display: none;
+    }
+
+    .paper-authors {
+      margin-top: 0.35rem;
+      line-height: 1.5;
+      color: #38bdf8;
+      font-weight: 500;
+    }
+
+    .paper-authors .author-block {
+      display: inline;
+      margin: 0 0.2rem;
+      white-space: nowrap;
+    }
+
+    .paper-authors .author-line {
+      display: block;
+      margin: 0.15rem 0;
+    }
+
+    .paper-authors sup {
+      color: var(--text-light);
+      font-size: 0.72em;
+    }
+
+    .paper-affiliation {
+      margin-top: 0.65rem;
+      line-height: 1.65;
+    }
+
+    .paper-notes {
+      margin-top: 0.75rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.65rem 1.2rem;
+    }
+
+    .paper-note-item {
+      white-space: nowrap;
+    }
+
+    .paper-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 0.75rem 0 1.1rem;
+    }
+
+    .paper-badges:empty {
+      display: none;
+    }
+
+    .paper-badges .tag {
+      border-radius: 999px;
+      padding: 0.55rem 1.1rem;
+      font-weight: 600;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+      min-width: 120px;
+    }
+
+    .paper-badges .tag:empty {
+      display: none;
+    }
+
+    .paper-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .paper-links .button {
+      border-radius: 999px;
+      box-shadow: var(--shadow-strong);
+    }
+
+    .paper-section {
+      padding: 1rem 1.25rem;
+    }
+
+    .paper-section:nth-of-type(2n) {
+      background: transparent;
+    }
+
+    .section-title {
+      margin-bottom: 0.35rem;
+    }
+
+    .section-content {
+      font-size: 1.04rem;
+      line-height: 1.8;
+      color: #1f2937;
+      max-width: 980px;
+      text-align: justify;
+      text-justify: inter-word;
+    }
+
+    .section-content p {
+      margin: 0 0 0.95rem;
+    }
+
+    .section-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-content ul {
+      margin: 0 0 0.95rem 1.35rem;
+      padding-left: 0.3rem;
+      list-style: disc;
+    }
+
+    .section-content li {
+      margin-bottom: 0.6rem;
+    }
+
+    .section-content li:last-child {
+      margin-bottom: 0;
+    }
+
+    .results-table-wrap {
+      margin-top: 0.8rem;
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .results-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    .results-table caption {
+      caption-side: top;
+      text-align: left;
+      font-size: 0.95rem;
+      color: #334155;
+      margin-bottom: 0.5rem;
+    }
+
+    .results-table th,
+    .results-table td {
+      padding: 0.5rem 0.65rem;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .results-table th:first-child,
+    .results-table td:first-child {
+      text-align: left;
+    }
+
+    .results-table thead th {
+      border-top: 2px solid #0f172a;
+      border-bottom: 2px solid #0f172a;
+      font-weight: 700;
+    }
+
+    .results-table tbody tr:last-child td {
+      border-bottom: 2px solid #0f172a;
+    }
+
+    .results-table tr.ours td:not(:first-child) {
+      font-weight: 700;
+    }
+
+    .text-medical {
+      color: #f59e0b;
+      font-weight: 600;
+    }
+
+    .text-natural {
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    .figure-wrap {
+      margin-top: 0.8rem;
+    }
+
+    .figure-image {
+      display: block;
+      width: 100%;
+      max-width: 980px;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .figure-fallback {
+      margin-top: 0.45rem;
+      font-size: 0.95rem;
+      color: #475569;
+    }
+
+    .citation-box {
+      margin-top: 0.8rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #f8fafc;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+    }
+
+    .citation-box pre {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      white-space: pre;
+    }
+
+    .paper-footer {
+      padding: 1rem 1.25rem 2rem;
+      color: #334155;
+    }
+
+    .icon-placeholder {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      border: 1px dashed var(--border-soft);
+      margin-right: 0.4rem;
+      color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+      .paper-hero {
+        padding: 2.4rem 1rem 1.5rem;
+      }
+
+      .paper-section {
+        padding: 0.8rem 1rem;
+      }
+
+      .title.is-1.paper-title {
+        font-size: clamp(2.2rem, 8.5vw, 3rem);
+        margin-bottom: 0.35rem;
+      }
+
+      .paper-title-sub {
+        font-size: 0.78em;
+      }
+
+      .section-content {
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      .results-table {
+        font-size: 0.88rem;
+      }
+
+      .citation-box pre {
+        font-size: 0.84rem;
+      }
+
+      .paper-links .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero paper-hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop has-text-centered">
+        <h1 class="title is-1 paper-title" id="paper-title">
+          <span class="paper-title-main">How Do Medical MLLMs Fail?</span>
+          <span class="paper-title-sub">A Study on Visual Grounding in Medical Images</span>
+        </h1>
+        <p class="subtitle is-4 paper-subtitle" id="paper-subtitle">ICLR 2026</p>
+
+        <div class="paper-badges" id="paper-badges"></div>
+
+        <div class="is-size-5 paper-authors" id="paper-authors">
+          <div class="author-line">
+            <span class="author-block">Guimeng Liu<sup>1,*</sup>,</span>
+            <span class="author-block">Tianze Yu<sup>1,*</sup>,</span>
+            <span class="author-block">Somayeh Ebrahimkhani<sup>1,*</sup>,</span>
+            <span class="author-block">Lin Zhi Zheng Shawn<sup>2,3</sup>,</span>
+          </div>
+          <div class="author-line">
+            <span class="author-block">Kok Pin Ng<sup>2,3,&dagger;</sup>,</span>
+            <span class="author-block">Ngai-Man Cheung<sup>1,&dagger;,&#8225;</sup></span>
+          </div>
+        </div>
+        <div class="is-size-6 paper-affiliation" id="paper-affiliations">
+          <div><sup>1</sup> Singapore University of Technology and Design, Singapore</div>
+          <div><sup>2</sup> Department of Neurology, National Neuroscience Institute, Singapore</div>
+          <div><sup>3</sup> Duke-NUS Medical School, Singapore</div>
+        </div>
+        <div class="paper-notes">
+          <span class="paper-note-item"><sup>*</sup> Equal first-author contribution</span>
+          <span class="paper-note-item"><sup>&dagger;</sup> Corresponding author</span>
+          <span class="paper-note-item"><sup>&#8225;</sup> Project lead</span>
+        </div>
+
+        <div class="paper-links">
+          <a class="button is-dark is-rounded" href="#">
+            <span class="icon"><i class="fas fa-file-alt"></i></span>
+            <span></span>
+          </a>
+          <a class="button is-dark is-rounded" href="#">
+            <span class="icon"><i class="fab fa-github"></i></span>
+            <span></span>
+          </a>
+          <a class="button is-dark is-rounded" href="#">
+            <span class="icon"><i class="fas fa-play-circle"></i></span>
+            <span></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section paper-section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title">Summary</h2>
+      <div class="section-content">
+          Generalist multimodal large language models (MLLMs) have achieved impressive performance across a wide range of vision-language tasks. However, their performance on medical tasks, particularly in zero-shot settings where generalization is critical, remains suboptimal. A key research gap is the limited understanding of why medical MLLMs underperform in medical image interpretation.
+          <b>Our work, for the first time, systematically validates inadequate visual grounding in clinically relevant image regions as one of the key contributing factors for medical MLLMs' under-performance.</b>
+          We note that this finding is specific to medical image analysis; in contrast, prior work has shown that MLLMs are capable of grounding their predictions in the correct image regions when applied to natural scene images.
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="section paper-section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title">Failure modes of Medical MLLMs</h2>
+      <div class="section-content">
+        We show the visual grounding issues in state-of-the-art medical MLLMs. (a) Column 1 shows input medical images with expert-annotated ground-truth regions (red boxes). Columns 2-5 display attention distributions from representative medical MLLMs. (b) Column 1 shows natural scene images with annotated ground-truth bounding boxes, and column 2 shows attention distributions from LLaVA-v1.5. We observed that state-of-the-art medical MLLMs often suffer from <em>inadequate visual grounding</em>—they fail to accurately localize and interpret image regions that are clinically relevant to the question. We note that, in contrast, when applied to natural images, MLLMs are capable of grounding their predictions in the correct image regions. This limitation contributes to medical MLLMs' suboptimal performance on medical VQA tasks. See our paper for details.
+      </div>
+      <div class="figure-wrap">
+        <img class="figure-image" src="./static/fig1.png" alt="Failure modes of Medical MLLMs figure">
+      </div>
+    </div>
+  </section>
+
+  <section class="section paper-section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title">VGMED: A new dataset for Visual Grounding analysis of MEDical MLLMs co-created with clinicians.</h2>
+      <div class="section-content">
+        <p>To rigorously evaluate medical MLLMs' visual grounding, we aim to systematically assess the extent to which their outputs are supported by clinically relevant regions of the image. However, existing Med-VQA datasets often include questions about image modality or plane, which can be answered without referencing specific image regions. They also contain many abnormality- or knowledge-based questions that require substantial medical expertise to determine what to look for. This makes it difficult to disentangle whether model errors arise from inadequate semantic grounding (i.e., the model is unable to determine what to look for) or from inadequate visual grounding (i.e., the model is unable to localize and interpret the relevant image region even when it knows what to look for). As a result, existing datasets are not well-suited for analyzing visual grounding.</p>
+        <p>To disentangle <em>visual grounding</em> from <em>semantic grounding</em>, we design VGMED, a novel evaluation dataset developed with expert clinical guidance, explicitly assessing the visual grounding capability of medical MLLMs. To address this gap, we build an evaluation dataset VGMED, focusing on visual grounding analysis.</p>
+      </div>
+      <div class="figure-wrap">
+        <img class="figure-image" src="./static/Fig2.png" alt="VGMED dataset overview figure">
+      </div>
+    </div>
+  </section>
+
+  <section class="section paper-section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title">Analysis</h2>
+      <div class="section-content">
+        <p>Medical MLLMs demonstrate suboptimal visual grounding when applied to medical images.
+        Analysis using our proposed VGMED dataset-designed specifically to assess visual grounding in medical MLLMs-shows that all evaluated medical MLLMs exhibit substantial weaker alignment between their attention distributions and ground-truth annotations on <span class="text-medical">medical images</span> compared to <span class="text-natural">natural scene images</span> (from MS COCO).
+        This failure mode contributed to their underperformance in zero-shot medical image understanding.
+        Further comparison with LLaVA-v1.5 on natural images reinforces this observation: medical MLLMs show significantly lower alignment with annotated regions-highlighting deficiencies in visual grounding for medical image analysis.</p>
+      </div>
+      <div class="figure-wrap">
+        <img class="figure-image" src="./static/Fig3.png" alt="Analysis results for visual grounding on VGMED">
+      </div>
+    </div>
+  </section>
+
+  <section class="section paper-section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title">Method</h2>
+      <div class="section-content">
+        <p>We proposed Visual Grounding Refinement (VGRefine): a two-step inference-time method to improve visual grounding in medical MLLMs.</p>
+        <ul>
+          <li><strong>Step I (Attention Triage):</strong> We aggregate attention from the model's most visually sensitive heads and suppress low-confident attention, obtaining a binary mask.</li>
+          <li><strong>Step II (Attention Knockout):</strong> We use this mask to refine the model's attention distribution, improving its focus on relevant regions during inference.</li>
+        </ul>
+      </div>
+      <div class="figure-wrap">
+        <img class="figure-image" src="./static/Fig4.png" alt="VGRefine method overview">
+      </div>
+    </div>
+  </section>
+
+  <section class="section paper-section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title">Experiments and Results</h2>
+      <div class="results-table-wrap">
+        <table class="results-table">
+          <caption>Accuracy on medical VQA datasets. To align with the evaluation protocol with HuatuoGPT-V, we specifically used the closed-ended subset for evaluation. Evaluation on other subsets in Supp.</caption>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>VQA-RAD</th>
+              <th>SLAKE</th>
+              <th>PathVQA</th>
+              <th>PMC-VQA</th>
+              <th>Avg.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Qwen-VL-Chat</td>
+              <td>47.0</td>
+              <td>56.0</td>
+              <td>55.1</td>
+              <td>36.6</td>
+              <td>48.9</td>
+            </tr>
+            <tr>
+              <td>LLaVA-v1.6-7B</td>
+              <td>52.6</td>
+              <td>57.9</td>
+              <td>47.9</td>
+              <td>35.5</td>
+              <td>48.5</td>
+            </tr>
+            <tr>
+              <td>Med-Flamingo</td>
+              <td>45.4</td>
+              <td>43.5</td>
+              <td>54.7</td>
+              <td>23.3</td>
+              <td>41.7</td>
+            </tr>
+            <tr>
+              <td>RadFM</td>
+              <td>50.6</td>
+              <td>34.6</td>
+              <td>38.7</td>
+              <td>25.9</td>
+              <td>37.5</td>
+            </tr>
+            <tr>
+              <td>LLaVA-Med-7B</td>
+              <td>51.4</td>
+              <td>48.6</td>
+              <td>56.8</td>
+              <td>24.7</td>
+              <td>45.4</td>
+            </tr>
+            <tr>
+              <td>LLaVA-Tri</td>
+              <td>59.8</td>
+              <td>43.4</td>
+              <td>59.0</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>HuatuoGPT-V-7B</td>
+              <td>67.4</td>
+              <td>76.5</td>
+              <td>60.7</td>
+              <td>53.9</td>
+              <td>65.3</td>
+            </tr>
+            <tr class="ours">
+              <td>VGRefine (Ours)</td>
+              <td>71.2</td>
+              <td>76.9</td>
+              <td>67.6</td>
+              <td>56.2</td>
+              <td>68.4</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="figure-wrap">
+        <img class="figure-image" src="./static/Radar.png" alt="Experiments results figure">
+      </div>
+    </div>
+  </section>
+
+  <section class="section paper-section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title">Citation</h2>
+      <div class="citation-box">
+        <pre><code>@inproceedings{
+liu2026how,
+title={How Do Medical {MLLM}s Fail?  A Study on Visual Grounding in Medical Images},
+author={Guimeng Liu and Tianze Yu and Somayeh Ebrahimkhani and Lin Zhi Zheng Shawn and Kok Pin Ng and Ngai-Man Cheung},
+booktitle={The Fourteenth International Conference on Learning Representations},
+year={2026},
+url={https://openreview.net/forum?id=dXshexyFKx}
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <footer class="paper-footer">
+    <div class="container is-max-desktop">
+      <h2 class="title is-4 section-title">Contact</h2>
+      <p>
+        <span class="icon-placeholder"><i class="fas fa-envelope"></i></span>
+        <span id="contact-email"></span>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

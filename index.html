@@ -36,6 +36,10 @@
       color: #0f172a;
     }
 
+    .container.is-max-desktop {
+      max-width: 1000px !important;
+    }
+
     .paper-hero {
       min-height: auto;
       background: #ffffff;
@@ -43,7 +47,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 3.25rem 1.25rem 2.25rem;
+      padding: 3rem 1.1rem 2.2rem;
     }
 
     .paper-hero .hero-body {
@@ -59,7 +63,7 @@
       color: var(--text-light);
       font-size: 3.4em;
       line-height: 1.15;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.45rem;
     }
 
     .paper-title-main,
@@ -78,13 +82,17 @@
       color: var(--text-light);
     }
 
+    .paper-subtitle {
+      margin: 0.25rem 0 0.8rem !important;
+    }
+
     .paper-subtitle:empty {
       display: none;
     }
 
     .paper-authors {
       margin-top: 0.35rem;
-      line-height: 1.5;
+      line-height: 1.6;
       color: #38bdf8;
       font-weight: 500;
     }
@@ -106,19 +114,19 @@
     }
 
     .paper-affiliation {
-      margin-top: 0.65rem;
-      line-height: 1.65;
+      margin-top: 0.8rem;
+      line-height: 1.72;
     }
 
     .paper-notes {
-      margin-top: 0.75rem;
+      margin-top: 1rem;
       color: var(--text-light);
       font-size: 0.9rem;
-      line-height: 1.5;
+      line-height: 1.65;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 0.65rem 1.2rem;
+      gap: 0.9rem 1.5rem;
     }
 
     .paper-note-item {
@@ -154,7 +162,7 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 0.75rem;
-      margin-top: 1rem;
+      margin-top: 1.15rem;
     }
 
     .paper-links .button {
@@ -163,28 +171,32 @@
     }
 
     .paper-section {
-      padding: 1rem 1.25rem;
+      padding: 1.9rem 1.1rem;
     }
 
     .paper-section:nth-of-type(2n) {
       background: transparent;
     }
 
+    .paper-section + .paper-section {
+      margin-top: 0.4rem;
+    }
+
     .section-title {
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.95rem;
     }
 
     .section-content {
-      font-size: 1.04rem;
-      line-height: 1.8;
+      font-size: 1.06rem;
+      line-height: 1.92;
       color: #1f2937;
-      max-width: 980px;
+      max-width: 900px;
       text-align: justify;
       text-justify: inter-word;
     }
 
     .section-content p {
-      margin: 0 0 0.95rem;
+      margin: 0 0 1.35rem;
     }
 
     .section-content p:last-child {
@@ -192,13 +204,13 @@
     }
 
     .section-content ul {
-      margin: 0 0 0.95rem 1.35rem;
+      margin: 0 0 1.35rem 1.45rem;
       padding-left: 0.3rem;
       list-style: disc;
     }
 
     .section-content li {
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.85rem;
     }
 
     .section-content li:last-child {
@@ -206,7 +218,7 @@
     }
 
     .results-table-wrap {
-      margin-top: 0.8rem;
+      margin-top: 1.2rem;
       width: 100%;
       overflow-x: auto;
     }
@@ -228,7 +240,7 @@
 
     .results-table th,
     .results-table td {
-      padding: 0.5rem 0.65rem;
+      padding: 0.68rem 0.82rem;
       border-bottom: 1px solid #e2e8f0;
       text-align: center;
       white-space: nowrap;
@@ -264,7 +276,7 @@
     }
 
     .figure-wrap {
-      margin-top: 0.8rem;
+      margin-top: 1.15rem;
     }
 
     .figure-image {
@@ -283,11 +295,11 @@
     }
 
     .citation-box {
-      margin-top: 0.8rem;
+      margin-top: 1.2rem;
       border: 1px solid #e2e8f0;
       border-radius: 10px;
       background: #f8fafc;
-      padding: 0.9rem 1rem;
+      padding: 1.15rem 1.2rem;
       overflow-x: auto;
     }
 
@@ -300,7 +312,7 @@
     }
 
     .paper-footer {
-      padding: 1rem 1.25rem 2rem;
+      padding: 0.8rem 1rem 1.6rem;
       color: #334155;
     }
 
@@ -318,11 +330,11 @@
 
     @media (max-width: 768px) {
       .paper-hero {
-        padding: 2.4rem 1rem 1.5rem;
+        padding: 2.1rem 0.9rem 1.4rem;
       }
 
       .paper-section {
-        padding: 0.8rem 1rem;
+        padding: 1.2rem 0.9rem;
       }
 
       .title.is-1.paper-title {
@@ -336,7 +348,7 @@
 
       .section-content {
         font-size: 1rem;
-        line-height: 1.7;
+        line-height: 1.8;
       }
 
       .results-table {
@@ -426,7 +438,7 @@
         We show the visual grounding issues in state-of-the-art medical MLLMs. (a) Column 1 shows input medical images with expert-annotated ground-truth regions (red boxes). Columns 2-5 display attention distributions from representative medical MLLMs. (b) Column 1 shows natural scene images with annotated ground-truth bounding boxes, and column 2 shows attention distributions from LLaVA-v1.5. We observed that state-of-the-art medical MLLMs often suffer from <em>inadequate visual grounding</em>—they fail to accurately localize and interpret image regions that are clinically relevant to the question. We note that, in contrast, when applied to natural images, MLLMs are capable of grounding their predictions in the correct image regions. This limitation contributes to medical MLLMs' suboptimal performance on medical VQA tasks. See our paper for details.
       </div>
       <div class="figure-wrap">
-        <img class="figure-image" src="./static/fig1.png" alt="Failure modes of Medical MLLMs figure">
+        <img class="figure-image" src="./static/Fig1.png" alt="Failure modes of Medical MLLMs figure">
       </div>
     </div>
   </section>

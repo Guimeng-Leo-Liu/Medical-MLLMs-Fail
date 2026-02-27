@@ -453,8 +453,8 @@
     <div class="container is-max-desktop">
       <h2 class="title is-3 section-title">VGMED Dataset</h2>
       <div class="section-content">
-        <p>Existing Med-VQA datasets are not well-suited for systematically studying visual grounding (subfig. a): it's difficult to disentangle whether model errors arise from inadequate semantic grounding (i.e., the model is unable to determine what to look for) or from inadequate visual grounding (i.e., the model is unable to localize the relevant image region even when it knows what to look for).</p>
-        <p>To disentangle <em>visual grounding</em> from <em>semantic grounding</em>, we design VGMED (subfig. b), a novel evaluation dataset developed with expert clinical guidance, explicitly assessing the visual grounding capability of medical MLLMs. To address this gap, we build an evaluation dataset VGMED, focusing on visual grounding analysis.</p>
+        <p>Existing Med-VQA datasets are not well-suited for systematically studying visual grounding (subfig. a): it's difficult to disentangle whether model errors arise from inadequate semantic grounding (i.e., the model is unable to determine what to look for) or from inadequate visual grounding (i.e., the model is unable to localize the relevant image region even when it knows what to look for).
+        To disentangle <em>visual grounding</em> from <em>semantic grounding</em>, we design VGMED (subfig. b), a novel evaluation dataset developed with expert clinical guidance, <b>explicitly assessing the visual grounding capability of medical MLLMs.</b></p>
       </div>
       <div class="figure-wrap">
         <img class="figure-image" src="./static/Fig2.png" alt="VGMED dataset overview figure">
@@ -469,7 +469,7 @@
         <p>Medical MLLMs demonstrate suboptimal visual grounding when applied to medical images.
         Analysis using our proposed VGMED dataset shows that all evaluated medical MLLMs exhibit substantial weaker alignment between their attention distributions and ground-truth annotations on <span class="text-medical">medical images</span> compared to <span class="text-natural">natural scene images</span> (from MS COCO).
         <p>This failure mode contributed to their underperformance in zero-shot medical image understanding.
-        Further comparison with LLaVA-v1.5 on natural images reinforces this observation: medical MLLMs show significantly lower alignment with annotated regions-highlighting deficiencies in visual grounding for medical image analysis.</p>
+        Further comparison with LLaVA-v1.5 on natural images reinforces this observation: <b>medical MLLMs show significantly lower alignment with annotated regions, highlighting deficiencies in visual grounding for medical image analysis.</b></p>
       </div>
       <div class="figure-wrap">
         <img class="figure-image" src="./static/Fig3.png" alt="Analysis results for visual grounding on VGMED">
@@ -497,7 +497,7 @@
     <div class="container is-max-desktop">
       <h2 class="title is-3 section-title">Experimental Results</h2>
       <div class="section-content">
-        <p>Our approach achieves SOTA performance across 6 diverse Med-VQA benchmarks (over 110K VQA samples from 8 imaging modalities) without requiring additional training or external expert models.</p>
+        <p>Our approach <b>achieves SOTA performance across 6 diverse Med-VQA benchmarks</b> (over 110K VQA samples from 8 imaging modalities) without requiring additional training or external expert models.</p>
       </div>
       <div class="results-table-wrap">
         <table class="results-table">

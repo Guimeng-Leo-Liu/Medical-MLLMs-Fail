@@ -214,6 +214,21 @@
       margin-bottom: 0;
     }
 
+    .section-content a {
+      color: #0ea5e9;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .section-content a:hover {
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+    }
+
+    .dataset-link-wrap {
+      margin-top: 0.5rem;
+    }
+
     .section-content ul {
       margin: 0 0 1.35rem 1.45rem;
       padding-left: 0.3rem;
@@ -418,17 +433,17 @@
         </div>
 
         <div class="paper-links">
-          <a class="button is-dark is-rounded" href="#">
+          <a class="button is-dark is-rounded" href="https://arxiv.org/pdf/2603.14323v1" title="Paper">
             <span class="icon"><i class="fas fa-file-alt"></i></span>
-            <span></span>
+            <span>Paper</span>
           </a>
-          <a class="button is-dark is-rounded" href="#">
+          <a class="button is-dark is-rounded" href="https://github.com/Guimeng-Leo-Liu/Medical-MLLMs-Fail" title="Code">
             <span class="icon"><i class="fab fa-github"></i></span>
-            <span></span>
+            <span>Code</span>
           </a>
-          <a class="button is-dark is-rounded" href="#">
-            <span class="icon"><i class="fas fa-play-circle"></i></span>
-            <span></span>
+          <a class="button is-dark is-rounded" href="https://huggingface.co/datasets/Ricardo8Leo/VGMED" target="_blank" rel="noopener noreferrer" title="VGMED dataset">
+            <span class="icon"><i class="fas fa-database"></i></span>
+            <span>Dataset</span>
           </a>
         </div>
       </div>
@@ -466,6 +481,7 @@
       <div class="section-content">
         <p>Existing Med-VQA datasets are not well-suited for systematically studying visual grounding (subfig. a): it's difficult to disentangle whether model errors arise from inadequate semantic grounding (i.e., the model is unable to determine what to look for) or from inadequate visual grounding (i.e., the model is unable to localize the relevant image region even when it knows what to look for).
         To disentangle <em>visual grounding</em> from <em>semantic grounding</em>, we design VGMED (subfig. b), a novel evaluation dataset developed with expert clinical guidance, <b>explicitly assessing the visual grounding capability of medical MLLMs.</b></p>
+        <p class="dataset-link-wrap"><a href="https://huggingface.co/datasets/Ricardo8Leo/VGMED" target="_blank" rel="noopener noreferrer">Download VGMED on Hugging Face</a></p>
       </div>
       <div class="figure-wrap">
         <img class="figure-image" src="./static/Fig2.png" alt="VGMED dataset overview figure">
@@ -477,10 +493,8 @@
     <div class="container is-max-desktop">
       <h2 class="title is-3 section-title">Observations</h2>
       <div class="section-content">
-        <p>Medical MLLMs demonstrate suboptimal visual grounding when applied to medical images.
-        Analysis using our proposed VGMED dataset shows that all evaluated medical MLLMs exhibit substantial weaker alignment between their attention distributions and ground-truth annotations on <span class="text-medical">medical images</span> compared to <span class="text-natural">natural scene images</span> (from MS COCO).
-        <p>This failure mode contributed to their underperformance in zero-shot medical image understanding.
-        Further comparison with LLaVA-v1.5 on natural images reinforces this observation: <b>medical MLLMs show significantly lower alignment with annotated regions, highlighting deficiencies in visual grounding for medical image analysis.</b></p>
+        <p>Medical MLLMs demonstrate suboptimal visual grounding when applied to medical images. Analysis using our proposed VGMED dataset shows that all evaluated medical MLLMs exhibit substantially weaker alignment between their attention distributions and ground-truth annotations on <span class="text-medical">medical images</span> compared to <span class="text-natural">natural scene images</span> (from MS COCO).</p>
+        <p>This failure mode contributed to their underperformance in zero-shot medical image understanding. Further comparison with LLaVA-v1.5 on natural images reinforces this observation: <b>medical MLLMs show significantly lower alignment with annotated regions, highlighting deficiencies in visual grounding for medical image analysis.</b></p>
       </div>
       <div class="figure-wrap">
         <img class="figure-image" src="./static/Fig3.png" alt="Analysis results for visual grounding on VGMED">

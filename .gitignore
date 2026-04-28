@@ -1,0 +1,10 @@
+HuatuoGPT-Vision/
+Qwen3-VL/
+__pycache__/
+*.py[cod]
+.codex
+*.pt
+*.npy
+results/
+results_head/
+outputs/

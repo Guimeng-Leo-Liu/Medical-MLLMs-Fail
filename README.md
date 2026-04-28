@@ -1,6 +1,8 @@
-# How Medical MLLMs Fail [ICLR'26]
+# [ICLR'26] How Do Medical MLLMs Fail? A Study on Visual Grounding in Medical Images
 
 This repository measures how medical multimodal large language models attend to image regions that are relevant to visual-question-answering samples.
+
+**Links:** [Project Page](https://guimeng-leo-liu.github.io/Medical-MLLMs-Fail/) | [Paper](https://arxiv.org/pdf/2603.14323v1) | [Dataset](https://huggingface.co/datasets/guimeng-liu/VGMED)
 
 - `measure_attention.py`: computes layer-level metrics.
 - `measure_attention_head.py`: computes head-level metrics.
@@ -59,7 +61,7 @@ The requirements file is a curated version of the local `mllm` environment. If y
 
 Download VGMED from Hugging Face:
 
-https://huggingface.co/datasets/guimeng-liu/VGMED/tree/main
+https://huggingface.co/datasets/guimeng-liu/VGMED
 
 The evaluation JSONL files are:
 
@@ -175,4 +177,21 @@ result = VGRefine(
 )
 
 print(result["response"])
+```
+
+## Citation
+
+```bibtex
+@inproceedings{liu2026how,
+  title     =   {How Do Medical MLLMs Fail?  A Study on Visual Grounding in Medical Images},
+  author    =   {Guimeng Liu 
+              and Tianze Yu 
+              and Somayeh Ebrahimkhani 
+              and Lin Zhi Zheng Shawn 
+              and Kok Pin Ng 
+              and Ngai-Man Cheung},
+  booktitle =  {The Fourteenth International Conference on Learning Representations},
+  year={2026},
+  url={https://openreview.net/forum?id=dXshexyFKx}
+}
 ```

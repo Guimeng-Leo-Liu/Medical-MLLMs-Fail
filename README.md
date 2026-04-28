@@ -25,13 +25,6 @@ git clone https://github.com/FreedomIntelligence/HuatuoGPT-Vision.git
 git clone https://github.com/QwenLM/Qwen3-VL.git
 ```
 
-The scripts use:
-
-- `./HuatuoGPT-Vision` as the default HuatuoGPT-Vision support repo path.
-- `--qwen_vl_utils_path ./Qwen3-VL/qwen-vl-utils/src` for local Qwen visual preprocessing.
-
-Only pass `--huatuo_repo /custom/path/HuatuoGPT-Vision` if you cloned HuatuoGPT-Vision outside this project folder.
-
 **Important:** for HuatuoGPT-Vision attention extraction, use the modified `cli_new.py` from this repository:
 
 ```bash

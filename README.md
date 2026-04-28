@@ -1,4 +1,4 @@
-# How Medical MLLMs Fail
+# How Medical MLLMs Fail [ICLR'26]
 
 This repository measures how medical multimodal large language models attend to image regions that are relevant to visual-question-answering samples.
 
